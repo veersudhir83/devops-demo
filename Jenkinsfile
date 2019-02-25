@@ -25,6 +25,6 @@ node {
       dir('../../userContent/') {
           sh script: 'curl -uadmin:APBCtBCDns234HC98JejBsWfu6c -O http://localhost:8081/artifactory/generic-local/devops-demo/DEV_ENV/${BUILD_NUMBER}/devops-demo-app-0.0.1-SNAPSHOT.jar'
       }
-     
+      sh script: 'curl -uadmin:APBCtBCDns234HC98JejBsWfu6c -O http://localhost:8081/artifactory/generic-local/devops-demo/DEV_ENV/${BUILD_NUMBER}/devops-demo-app-0.0.1-SNAPSHOT.jar'
    }   
 }
