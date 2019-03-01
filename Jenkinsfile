@@ -18,7 +18,7 @@ node {
    }
 
    stage('Upload Artifact') {
-     sh script: 'curl -uadmin:APBCtBCDns234HC98JejBsWfu6c -T ${WORKSPACE}/target/*.jar http://localhost:8081/artifactory/generic-local/devops-demo/DEV_ENV/${BUILD_NUMBER}/'
+     sh script: 'curl -uadmin:AP5n2xWHNccv2Ea7VJXFK9j4UHW -T ${WORKSPACE}/target/*.jar http://localhost:8081/artifactory/generic-local/devops-demo/DEV_ENV/${BUILD_NUMBER}/'
    }
    
    stage('Download Artifact') {
