@@ -1,0 +1,46 @@
+---
+- hosts: dev-nodes
+  become: yes
+  become_user: root
+
+  vars:
+    JENKINS_VERSION: 2.107
+    J_USER: tomcat8
+    J_GROUP: tomcat8
+
+  tasks:
+    - name: ensure Tomcat is at the latest version
+      apt: pkg=tomcat8 state=latest
+      tags: updateTomcat8
+       
+    - name: ensure Tomcat is stopped
+      service: name=tomcat8 state=stopped
+      tags: stopTomcat8
+
+    - name: download Jenkins
+      local_action:
+        get_url
+          url=http://mirrors.Jenkins-ci.org/war/{{ JENKINS_VERSION }}/jenkins.war
+          dest=/tmp/jenkins.war
+          mode=0644
+      tags: downloadJenkinsWar
+
+    - name: Upload Jenkins to host
+      copy:
+        src=/tmp/jenkins.war
+        dest=/var/lib/tomcat8/webapps/jenkins.war
+        mode=0644
+      tags: deployJenkinsWar
+
+    - name: Create the jenkins home directory
+      file:
+        path=/usr/share/tomcat8/.jenkins/
+        owner={{ J_USER }}
+        group={{ J_GROUP }}
+        mode=0777
+        state=directory
+      tags: configureJenkins
+
+    - name: start Tomcat to pickup and install Jenkins
+      service: name=tomcat8 state=started
+      tags: startTomcat8

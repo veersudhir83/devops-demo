@@ -1,0 +1,22 @@
+---
+- hosts: dev-nodes
+  gather_facts: yes
+
+  tasks:
+
+    # Example setting host facts using key=value pairs, note that this always creates strings or booleans
+    - set_fact: static_text="Printing Node Details", ip_addresses="{{ ansible_all_ipv4_addresses }}"
+
+    - name: Print debug information
+      vars:
+        msg: |
+            Header: {{ static_text }}
+            Ansible Distribution: {{ ansible_distribution }}
+            Ansible Release: {{ ansible_distribution_release }}
+            Ansible Version: {{ ansible_distribution_version }}
+      debug:
+        msg: "{{ msg.split('\n') }}"
+      when: ansible_os_family == "Windows"
+      tags: debug_info
+
+    - debug: var=ip_addresses

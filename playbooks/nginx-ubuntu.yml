@@ -1,0 +1,25 @@
+---
+# easy Ubuntu nginx playbook as an example.
+- hosts: prod-nodes
+  become: yes
+  #become_user: root
+
+  vars:
+    #workers: use at template ansible_processor_count 
+    connections : "1024"
+
+    is_10_up: "'$ansible_distribution_version' >= '10.04'"
+    is_ubuntu: "'$ansible_distribution' == 'Ubuntu'"
+
+  tasks:
+    - include: nginx/tasks/setup.yml
+
+    - name: Place HTML File
+      copy:
+        src: "./nginx/files/index.html"
+        dest: "/var/www/html/index.html"
+
+  handlers:
+    - name: restart nginx
+      action: service name=nginx state=restarted
+

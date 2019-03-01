@@ -1,0 +1,55 @@
+--- 
+- hosts: nodes
+  vars:
+    APPLICATION_NAME: "devops-web-hackathon"
+    NODES_HOME_DIRECTORY: "/home/osboxes"
+    TOMCAT_FOLDER_NAME: "apache-tomcat-8.5.30"
+    TEMP_PATH: "{{ NODES_HOME_DIRECTORY }}/tmp"
+
+  tasks:
+    - name: Create Temp Folder
+      file:
+        path: "{{ TEMP_PATH }}"
+        mode: 0755
+        state: directory
+      tags: createTempFolder
+
+    - name: Capture Start DTTM
+      shell: |
+        echo "$(date +%s)" > starttimefile
+      args:
+        chdir: "{{ TEMP_PATH }}"
+      tags: captureStartDttm
+
+    - name: Copy Tomcat Zip file on Nodes
+      copy:
+        src: "{{ NODES_HOME_DIRECTORY }}/{{ TOMCAT_FOLDER_NAME }}.zip"
+        dest: "{{ NODES_HOME_DIRECTORY }}"
+        owner: osboxes
+        group: osboxes
+        mode: 0600
+      tags: copyTarBall
+
+    - name: Explode Tomcat Installation File
+      unarchive:
+        src: "{{ NODES_HOME_DIRECTORY }}/{{ TOMCAT_FOLDER_NAME }}.zip"
+        dest: "{{ NODES_HOME_DIRECTORY }}"
+        remote_src: yes
+      tags: explodeTomcatInstallationFile
+
+    - name: Calculate Duration
+      shell: |
+        finishtime=$(date +%s)
+        starttime=`cat starttimefile`
+        DIFF=$(( $finishtime - $starttime ))
+        echo "Playbook ran for $((DIFF/60)) mins and $((DIFF%60)) seconds"
+        rm starttimefile
+      args:
+        chdir: "{{ TEMP_PATH }}"
+      register: DURATION
+      tags: calculateDuration
+
+    - name: Print Overall Duration Details
+      debug:
+        msg: "{{ DURATION.stdout }}"
+      tags: printDuration

@@ -1,0 +1,18 @@
+---
+- hosts: dev-nodes
+
+  become: yes
+
+  tasks:
+    - name: install tree utility
+      apt: 
+        name: tree
+        state: present
+      tags: installTree
+
+    - name: uninstall tree utility
+      apt:
+        name: tree
+        state: absent
+      tags: uninstallTree
+  

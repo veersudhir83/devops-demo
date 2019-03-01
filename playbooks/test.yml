@@ -1,0 +1,42 @@
+---
+- hosts: all
+  gather_facts: yes
+
+  tasks:
+    - name: Check Files Existence
+      shell: "ls -al /home/osboxes/folder/*.txt"
+      register: output
+
+    - name: Print Output
+      debug:
+        msg: "{{ output.stdout }}"
+
+    - name: Get username
+      command: /bin/hostname
+      register: my_host_username
+ 
+    - debug: 
+        msg: "{{ my_host_username.stdout }}"
+
+    - name: Create tmp folder
+      file: 
+        dest: "/home/osboxes/tmp/"
+        state: directory
+      tags: creatTmpFolder
+      
+    - name: Download tomcat
+      shell: "wget --no-check-certificate http://www-us.apache.org/dist/tomcat/tomcat-8/v8.5.30/bin/apache-tomcat-8.5.30.zip"
+      args:
+        chdir: "/home/osboxes/tmp"
+      tags: downloadTomcat
+
+
+
+#    - name: Host Uptime
+#      shell: /usr/bin/uptime
+#      register: result
+#      when: ansible_os_family == "Debian"
+
+#    - debug: 
+#        msg: "{{ result.stdout_lines }}"
+

@@ -1,0 +1,23 @@
+---
+- hosts: dev-nodes
+
+  vars:
+    APP_HOME_DIR: "/home/osboxes/Documents/ansible_test"
+    DEST_FILE_NAME: "index.html"
+
+  vars_prompt:
+    - name: username
+      prompt: What is your name?
+
+  tasks:
+    - name: Create test folder
+      file: 
+        dest: "{{ APP_HOME_DIR }}"
+        state: directory
+      tags: createTestFolder
+
+    - name: Copy Template as HTML File
+      template:
+        src: "/home/osboxes/playbooks/templates/index.j2"
+        dest: "{{ APP_HOME_DIR }}/{{ DEST_FILE_NAME }}"
+      tags: copyTemplateAsHTML

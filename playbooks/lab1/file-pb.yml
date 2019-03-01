@@ -1,0 +1,34 @@
+---
+- name: copy file to a folder for ubuntu
+  hosts: ubuntu-nodes
+  
+  vars:
+    TARGET_DIRECTORY: "/home/osboxes/Documents/ansible_test"
+    TARGET_FILE: "index.html"
+
+  tasks:
+    - name: Create test folder
+      file: 
+        dest: "{{ TARGET_DIRECTORY }}"
+        state: directory
+      tags: createFolder
+
+    - name: Copy Template as HTML File
+      copy:
+        src: "/home/osboxes/playbooks/lab1/index.html"
+        dest: "{{ TARGET_DIRECTORY }}/{{ TARGET_FILE }}"
+      tags: copyFile
+
+- name: touch file to a new folder for centos
+  hosts: centos-nodes
+
+  vars:
+    TARGET_DIRECTORY: "/home/osboxes/Documents/ansible_test"
+    TARGET_FILE: "index.html"
+
+  tasks:
+    - name: Create Folder and Copy File
+      shell: |
+        mkdir {{ TARGET_DIRECTORY }}
+        touch {{ TARGET_DIRECTORY }}/{{ TARGET_FILE}}
+      tags: inSingleTask
